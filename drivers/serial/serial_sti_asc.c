@@ -6,6 +6,7 @@
  * Author(s): Patrice Chotard, <patrice.chotard@foss.st.com> for STMicroelectronics.
  */
 
+#include <clk.h>
 #include <dm.h>
 #include <log.h>
 #include <serial.h>
@@ -42,12 +43,13 @@ struct sti_asc_uart {
 struct sti_asc_serial {
 	/* address of registers in physical memory */
 	struct sti_asc_uart *regs;
+	/* clock rate of the IP */
+	u32 clock_rate;
 };
 
 /* Values for the BAUDRATE Register */
-#define PCLK			(200ul * 1000000ul)
-#define BAUDRATE_VAL_M0(bps)	(PCLK / (16 * (bps)))
-#define BAUDRATE_VAL_M1(bps)	((bps * (1 << 14)) + (1<<13)) / (PCLK/(1 << 6))
+#define BAUDRATE_VAL_M0(pclk, bps)	((pclk) / (16 * (bps)))
+#define BAUDRATE_VAL_M1(pclk, bps)	((bps * (1 << 14)) + (1<<13)) / ((pclk)/(1 << 6))
 
 /*
  * MODE 0
@@ -79,30 +81,31 @@ static int sti_asc_pending(struct udevice *dev, bool input)
 		return status & STA_TF;
 }
 
-static int _sti_asc_serial_setbrg(struct sti_asc_uart *uart, int baudrate)
+static int _sti_asc_serial_setbrg(struct sti_asc_serial *priv, int baudrate)
 {
+	struct sti_asc_uart *const uart = priv->regs;
 	unsigned long val;
 	int t, mode = 1;
 
 	switch (baudrate) {
 	case 9600:
-		t = BAUDRATE_VAL_M0(9600);
+		t = BAUDRATE_VAL_M0(priv->clock_rate, 9600);
 		mode = 0;
 		break;
 	case 19200:
-		t = BAUDRATE_VAL_M1(19200);
+		t = BAUDRATE_VAL_M1(priv->clock_rate, 19200);
 		break;
 	case 38400:
-		t = BAUDRATE_VAL_M1(38400);
+		t = BAUDRATE_VAL_M1(priv->clock_rate, 38400);
 		break;
 	case 57600:
-		t = BAUDRATE_VAL_M1(57600);
+		t = BAUDRATE_VAL_M1(priv->clock_rate, 57600);
 		break;
 	default:
 		debug("ASC: unsupported baud rate: %d, using 115200 instead.\n",
 		      baudrate);
 	case 115200:
-		t = BAUDRATE_VAL_M1(115200);
+		t = BAUDRATE_VAL_M1(priv->clock_rate, 115200);
 		break;
 	}
 
@@ -130,9 +133,8 @@ static int _sti_asc_serial_setbrg(struct sti_asc_uart *uart, int baudrate)
 static int sti_asc_serial_setbrg(struct udevice *dev, int baudrate)
 {
 	struct sti_asc_serial *priv = dev_get_priv(dev);
-	struct sti_asc_uart *const uart = priv->regs;
 
-	return _sti_asc_serial_setbrg(uart, baudrate);
+	return _sti_asc_serial_setbrg(priv, baudrate);
 }
 
 /* blocking function, that returns next char */
@@ -170,10 +172,26 @@ static int sti_asc_serial_probe(struct udevice *dev)
 	struct sti_asc_serial *priv = dev_get_priv(dev);
 	unsigned long val;
 	fdt_addr_t base;
+	struct clk clk;
+	int ret;
 
 	base = dev_read_addr(dev);
 	if (base == FDT_ADDR_T_NONE)
 		return -EINVAL;
+
+	ret = clk_get_by_index(dev, 0, &clk);
+	if (ret < 0)
+		return ret;
+
+	ret = clk_enable(&clk);
+	if (ret)
+		return ret;
+
+	priv->clock_rate = clk_get_rate(&clk);
+	if (!priv->clock_rate) {
+		clk_disable(&clk);
+		return -EINVAL;
+	};
 
 	priv->regs = (struct sti_asc_uart *)base;
 	sti_asc_serial_setbrg(dev, gd->baudrate);
