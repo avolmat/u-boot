@@ -1,0 +1,7 @@
+STIH418-B2264 BOARD
+M:	Alain Volmat <avolmat@me.com>
+S:	Maintained
+F:	board/st/stih418-b2264/
+F:	include/configs/stih418-b2264.h
+F:	configs/stih418-b2264_defconfig
+F:	arch/arm/dts/stih418*
