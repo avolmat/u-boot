@@ -28,7 +28,7 @@ config SYS_SOC
 	default "stih410"
 
 choice
-	prompt "STiH410 board select"
+	prompt "STiH41x board select"
 
 config TARGET_STIH410_B2260
 	bool "96Boards STiH410-B2260"
@@ -48,8 +48,17 @@ config TARGET_STIH410_B2260
 	  - High speed connector (SD/I2C/USB interfaces)
 	  - Low speed connector (UART/I2C/GPIO/SPI/PCM interfaces)
 
+config TARGET_STIH418_B2264
+	bool "4KOpen STiH418-B2264"
+	select SUPPORT_SPL
+	select SPL
+	help
+	  Support for 4KOpen STiH418-B2264 based on STMicroelectronics
+	  STiH418 soc.
+
 endchoice
 
 source "board/st/stih410-b2260/Kconfig"
+source "board/st/stih418-b2264/Kconfig"
 
 endif

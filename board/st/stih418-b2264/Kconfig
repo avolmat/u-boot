@@ -1,0 +1,26 @@
+if TARGET_STIH418_B2264
+
+config SYS_BOARD
+	string
+	default "stih418-b2264"
+
+config SYS_VENDOR
+	string
+	default "st"
+
+config SYS_SOC
+	string
+	default "stih418"
+
+config SYS_CONFIG_NAME
+	string
+	default "stih418-b2264"
+
+config TARGET_STIH418_B2264_LIBBTFMW_PATH
+	string "Path to the libbtfmw.a file"
+	help
+	  U-boot SPL for STiH418-B2264 requires to be linked with the
+	  libbtfmw.a library which provide early platform initialize
+	  code.
+
+endif
