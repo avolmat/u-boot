@@ -6,12 +6,22 @@
  */
 
 /{
+	clk_uart1: clk-uart1 {
+		#clock-cells = <0>;
+		compatible = "fixed-clock";
+		clock-frequency = <200000000>;
+	};
+
 	soc {
 		st_dwc3: dwc3@8f94000 {
 			dwc3: dwc3@9900000 {
 				dr_mode	= "peripheral";
 				phys = <&usb2_picophy0>;
 			};
+		};
+
+		uart1: serial@9831000 {
+			clocks = <&clk_uart1>;
 		};
 
 		clk_usb: clk-usb {
