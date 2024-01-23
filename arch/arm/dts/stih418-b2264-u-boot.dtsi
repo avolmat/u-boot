@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Author(s): Alain Volmat, <avolmat@me.com>
+ *
+ */
+
+/ {
+	clk-sysin {
+		bootph-all;
+	};
+
+	timer@8760200 {
+		bootph-all;
+	};
+
+	soc {
+		bootph-all;
+		syscfg_flash: flash-syscfg@92a0000 {
+			bootph-all;
+		};
+		pin-controller-flash@923f080 {
+			bootph-all;
+			pio40: gpio@9230000 {
+				bootph-all;
+			};
+			pio41: gpio@9231000 {
+				bootph-all;
+			};
+			mmc0 {
+				bootph-all;
+				pinctrl_mmc0: mmc0-0 {
+					bootph-all;
+					st,pins {
+						bootph-all;
+					};
+				};
+			};
+		};
+	};
+};
+
+&dwc3 {
+	phys = <&usb2_picophy0>;
+};
+
+&ehci0 {
+	compatible = "generic-ehci";
+};
+
+&mmc0 {
+	/delete-property/ assigned-clocks;
+	/delete-property/ assigned-clock-parents;
+	/delete-property/ assigned-clock-rates;
+	bootph-all;
+};
+
+&ohci1 {
+	compatible = "generic-ohci";
+};
+
+&sbc_serial0 {
+	bootph-all;
+};
