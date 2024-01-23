@@ -1,5 +1,29 @@
 if ARCH_STI
 
+config SPL
+	select SPL_BOARD_INIT
+	select SPL_CLK
+	select SPL_DM
+	select SPL_DM_SEQ_ALIAS
+	select SPL_DRIVERS_MISC
+	select SPL_FRAMEWORK
+	select SPL_GPIO
+	select SPL_LIBCOMMON_SUPPORT
+	select SPL_LIBGENERIC_SUPPORT
+	select SPL_OF_CONTROL
+	select SPL_OF_TRANSLATE
+	select SPL_PINCTRL
+	select SPL_REGMAP
+#	select SPL_DM_RESET
+	select SPL_SERIAL
+	select SPL_SYSCON
+	select SPL_WATCHDOG if WATCHDOG
+	imply BOOTSTAGE_STASH if SPL_BOOTSTAGE
+	imply SPL_BOOTSTAGE if BOOTSTAGE
+	imply SPL_DISPLAY_PRINT
+	imply SPL_LIBDISK_SUPPORT
+	imply SPL_SPI_LOAD if SPL_SPI
+
 config SYS_SOC
 	default "stih410"
 
