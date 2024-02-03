@@ -1,0 +1,24 @@
+Instruction in order to build for the stih418-b2264 platform
+
+Preparation of the libbtfmw-h418.a file
+---------------------------------------
+U-boot SPL requires to have a valid libbtfmw-h418.a file available.  Indeed
+the libbtfmw is in charge of the early platform preparation.
+This is part of the targetpack-20160812-3 tarball which can be found within
+the starkl delivery available at https://bitbucket.org/4kopen/starkl/get/v1.0.3.tar.bz2
+
+Before being able to use the libbtfmw-h418.a, due to a duplicated symbol
+(div64_u64) available in both u-boot and libbtfmw, it is necessary to run the
+following command in order to rename the symbol available within libbtfmw
+
+objcopy --redefine-sym div64_u64=libbtfwm_div64_u64 libbtfmw-h418.a
+
+1. make stih418-b2264_defconfig
+2. within the make menuconfig, set the TARGET_STIH418_B2264_LIBBTFMW_PATH parameter to the folder containing the libbtfmw-h418.a file
+3. build u-boot spl and u-boot:
+   ARCH=arm CROSS_COMPILE="ccache /usr/bin/arm-linux-gnueabihf-" make all
+4. upon build, 2 binaries are available:
+   u-boot/spl/u-boot-spl.bin: U-boot SPL, to be placed at the beginning of the NOR flash on the 4KOpen card
+   u-boot/u-boot.img: a FIT image of U-boot, which will be loaded by the SPL.
+
+By default (with the stih418-b2264_defconfig provided), the U-boot SPL will look for the u-boot.img file into the 1st primary of the SD card which should be formatted as FAT
