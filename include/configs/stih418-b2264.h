@@ -14,6 +14,9 @@
 #define CFG_SYS_SDRAM_BASE		PHYS_SDRAM_1
 #define PHYS_SDRAM_1_SIZE		0x80000000
 
+/* FIXME: This should be loaded from device tree... */
+#define CFG_SYS_PL310_BASE		0x08762000
+
 #ifdef CONFIG_SPL_BUILD
 #define SRAM_BASE_ADDR			0x6000000
 #define SRAM_SIZE			0x98000
