@@ -12,6 +12,20 @@
 
 	chosen {
 		stdout-path = &sbc_serial0;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		framebuffer {
+			compatible = "simple-framebuffer";
+			clocks = <&clk_s_c0_flexgen CLK_COMPO_DVP>,
+				 <&clk_s_c0_flexgen CLK_COMPO_DVP>,
+				 <&clk_s_d2_flexgen CLK_PIX_MAIN_DISP>,
+				 <&clk_s_d2_flexgen CLK_PIX_AUX_DISP>,
+				 <&clk_s_c0_flexgen CLK_PROC_MIXER>;
+
+			status = "disabled";
+		};
 	};
 
 	memory@40000000 {
