@@ -4,7 +4,6 @@
  * Originaly based on board.c of stih410-b2260
  */
 
-#include <common.h>
 #include <cpu_func.h>
 #include <init.h>
 #include <asm/cache.h>
@@ -71,12 +70,6 @@ static struct dwc3_device dwc3_device_data = {
 	.index = 0,
 };
 
-int dm_usb_gadget_handle_interrupts(struct udevice *dev)
-{
-	dwc3_uboot_handle_interrupt(dev);
-	return 0;
-}
-
 int board_usb_init(int index, enum usb_init_type init)
 {
 	int node;
@@ -103,16 +96,6 @@ int g_dnl_board_usb_cable_connected(void)
 #endif
 
 #ifdef CONFIG_SPL_BUILD
-/* Return the id of the core currently running */
-static inline unsigned long read_mpidr(void)
-{
-	unsigned long val;
-
-	asm volatile ("mrc p15, 0, %0, c0, c0, 5" : "=r" (val));
-
-	return val;
-}
-
 /*
  * Currently SMP is not supported and moreover only
  * a single core must run in order to be able to
