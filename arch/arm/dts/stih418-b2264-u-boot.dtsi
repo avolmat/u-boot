@@ -40,6 +40,7 @@
 };
 
 &dwc3 {
+	dr_mode	= "peripheral";
 	phys = <&usb2_picophy0>;
 };
 
