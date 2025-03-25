@@ -18,6 +18,11 @@
 		syscfg_flash: flash-syscfg@92a0000 {
 			bootph-all;
 		};
+		clk_usb: clk-usb {
+			compatible = "fixed-clock";
+			#clock-cells = <0>;
+			clock-frequency = <100000000>;
+		};
 		pin-controller-flash@923f080 {
 			bootph-all;
 			pio40: gpio@9230000 {
@@ -46,6 +51,7 @@
 
 &ehci0 {
 	compatible = "generic-ehci";
+	clocks = <&clk_usb>;
 };
 
 &mmc0 {
@@ -57,6 +63,7 @@
 
 &ohci0 {
 	compatible = "generic-ohci";
+	clocks = <&clk_usb>;
 };
 
 &sbc_serial0 {
