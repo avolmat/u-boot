@@ -54,6 +54,11 @@
 	clocks = <&clk_usb>;
 };
 
+&ehci1 {
+	compatible = "generic-ehci";
+	clocks = <&clk_usb>;
+};
+
 &mmc0 {
 	/delete-property/ assigned-clocks;
 	/delete-property/ assigned-clock-parents;
@@ -62,6 +67,11 @@
 };
 
 &ohci0 {
+	compatible = "generic-ohci";
+	clocks = <&clk_usb>;
+};
+
+&ohci1 {
 	compatible = "generic-ohci";
 	clocks = <&clk_usb>;
 };
