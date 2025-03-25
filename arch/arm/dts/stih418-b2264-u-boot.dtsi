@@ -54,7 +54,7 @@
 	bootph-all;
 };
 
-&ohci1 {
+&ohci0 {
 	compatible = "generic-ohci";
 };
 
